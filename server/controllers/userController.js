@@ -1,14 +1,12 @@
 import { User } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import getDataUri from "../utils/datauri.js";
-import cloudinary from "../utils/cloud.js";
 
 export const register = async (req, res) => {
   try {
-    const { fullname, email, phoneNumber, password, adharcard, pancard, role } = req.body;
+    const { fullname, email, phoneNumber, password, role } = req.body;
 
-    if (!fullname || !email || !phoneNumber || !password || !role || !pancard || !adharcard) {
+    if (!fullname || !email || !phoneNumber || !password || !role) {
       return res.status(400).json({
         message: "Missing required fields",
         success: false,
@@ -23,46 +21,14 @@ export const register = async (req, res) => {
       });
     }
 
-    const existingAdharcard = await User.findOne({ adharcard });
-    if (existingAdharcard) {
-      return res.status(400).json({
-        message: "Adhar number already exists",
-        success: false,
-      });
-    }
-
-    const existingPancard = await User.findOne({ pancard });
-    if (existingPancard) {
-      return res.status(400).json({
-        message: "Pan number already exists",
-        success: false,
-      });
-    }
-
-    const file = req.file;
-    if (!file) {
-      return res.status(400).json({
-        message: "Profile image is required",
-        success: false,
-      });
-    }
-
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       fullname,
       email,
       phoneNumber,
-      adharcard,
-      pancard,
       password: hashedPassword,
       role,
-      profile: {
-        profilePhoto: cloudResponse.secure_url,
-      },
     });
 
     await newUser.save();
@@ -91,7 +57,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({
         message: "Incorrect email or password",
@@ -121,13 +87,11 @@ export const login = async (req, res) => {
       expiresIn: "1d",
     });
 
-    const sanitizedUser = {
+    user = {
       _id: user._id,
       fullname: user.fullname,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      adharcard: user.adharcard,
-      pancard: user.pancard,
       role: user.role,
       profile: user.profile,
     };
@@ -141,7 +105,7 @@ export const login = async (req, res) => {
       })
       .json({
         message: `Welcome back ${user.fullname}`,
-        user: sanitizedUser,
+        user,
         success: true,
       });
   } catch (error) {
@@ -172,9 +136,13 @@ export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
     const file = req.file;
-
+let skillsArray;
+    if(skills){
+      const skillsArray = skills.split(",");
+    }
+   
     const userId = req.id; // Assuming authentication middleware sets req.id
-    const user = await User.findById(userId);
+    let user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({
@@ -182,23 +150,31 @@ export const updateProfile = async (req, res) => {
         success: false,
       });
     }
-
-    if (fullname) user.fullname = fullname;
-    if (email) user.email = email;
-    if (phoneNumber) user.phoneNumber = phoneNumber;
-    if (bio) user.profile.bio = bio;
-    if (skills) user.profile.skills = skills.split(",");
-
-    if (file) {
-      const fileUri = getDataUri(file);
-      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-      user.profile.resume = cloudResponse.secure_url;
-      user.profile.resumeOriginalName = file.originalname;
+    if(fullname) {
+      user.fullname = fullname;
     }
+    if(email) {
+      user.email = email;
+    }
+    if(phoneNumber) {
+      user.phoneNumber = phoneNumber;
+    }
+    if(bio) {
+      user.profile.bio = bio;
+    }
+    if(skills) {
+      user.profile.skills = skillsArray;
+    }
+    
+    user.fullname = user.fullname;
+    user.email = user.email;
+    user.phoneNumber = user.phoneNumber;
+    user.bio = bio;
+    user.skills = skillsArray;
 
     await user.save();
 
-    const updatedUser = {
+    user = {
       _id: user._id,
       fullname: user.fullname,
       email: user.email,
@@ -209,7 +185,7 @@ export const updateProfile = async (req, res) => {
 
     return res.status(200).json({
       message: "Profile updated successfully",
-      user: updatedUser,
+      user,
       success: true,
     });
   } catch (error) {
@@ -220,86 +196,3 @@ export const updateProfile = async (req, res) => {
     });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
