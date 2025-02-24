@@ -7,9 +7,12 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import {toast}  from "sonner";
+import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "@/utils/data.js";
-
+import { setLoading } from "@/redux/authSlice";
+import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 
 function Login() {
   const [input, setInput] = useState({
@@ -18,6 +21,8 @@ function Login() {
     role: "",
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.auth);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -27,6 +32,7 @@ function Login() {
     e.preventDefault();
 
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
         headers: {
           "Content-Type": "application/json",
@@ -43,6 +49,8 @@ function Login() {
         ? error.response.data.message
         : "error occured";
       toast.error(errorMesssage);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -110,13 +118,19 @@ function Login() {
                 </div>
               </RadioGroup>
             </div>
-
-            {/* Centered Login Button */}
-            <div className="flex justify-center">
-              <button className="w-full py-3 bg-black text-white hover:bg-blue-400 rounded-md transition">
-                Login
-              </button>
-            </div>
+            {loading ? (
+              <div className="flex justify-center items-center my-10">
+                <div className="spinner-border text-blue-400 " role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center">
+                <button className="w-full py-3 bg-black text-white hover:bg-blue-400 rounded-md transition">
+                  Login
+                </button>
+              </div>
+            )}
 
             <p className="text-gray-600 text-center mt-4">
               Don't have an account?{" "}

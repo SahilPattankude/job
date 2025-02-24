@@ -15,14 +15,17 @@ function Navbar() {
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
         <div>
           <h1 className="text-3xl font-bold">
-            Job <span className="text-[#022bf8]">Portal</span>
+            <span className="text-purple-600">Job</span>
+            <span className="text-[#FA4F09]">Hunt</span>
+           
           </h1>
         </div>
         <div className="flex items-center gap-10">
           <ul className="flex font-medium items-center gap-6">
-            <li>Home</li>
+            <li><Link to={"/home"}>Home</Link></li>
             <li>Browse</li>
-            <li>Jobs</li>
+            <li><Link to={"/jobs"}>Jobs</Link></li>
+            
           </ul>
 
           {!user ? (

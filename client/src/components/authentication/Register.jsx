@@ -8,6 +8,9 @@ import axios from "axios";
 import { USER_API_ENDPOINT } from "@/utils/data";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { setLoading } from "@/redux/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 
 function Register() {
  
@@ -20,6 +23,8 @@ function Register() {
     file: "",
   });
   const navigate = useNavigate();
+  const { loading } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -41,6 +46,7 @@ function Register() {
       formData.append("file", input.file);
     }
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -57,7 +63,9 @@ function Register() {
         ? error.response.data.message
         : "error occured";
       toast.error(errorMesssage);
-    }
+    }finally {
+          dispatch(setLoading(false));
+        }
   };
 
   return (
@@ -157,9 +165,14 @@ function Register() {
                 className="cursor-pointer w-full"
               />
             </div>
-
-            {/* Centered Register Button */}
-            <div className="flex justify-center">
+            {loading ? (
+              <div className="flex justify-center items-center my-10">
+                <div className="spinner-border text-blue-400 " role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center">
               <button
                 type="submit"
                 className="w-full py-3 bg-black text-white hover:bg-red-400 rounded-md transition"
@@ -167,6 +180,9 @@ function Register() {
                 Register
               </button>
             </div>
+            )}
+
+           
 
             <p className="text-gray-600 text-center mt-4">
               Already have an account?{" "}
