@@ -11,27 +11,6 @@ const filterData = [
       "Chennai",
       "Delhi",
       "Kolkata",
-      "Hyderabad",
-      "Noida",
-      "Gurugram",
-      "Jaipur",
-      "Bhopal",
-      "Lucknow",
-      "Visakhapatnam",
-      "Vadodara",
-      "Surat",
-      "Ahmedabad",
-      "Mumbai",
-      "Bangalore",
-      "Chennai",
-      "Delhi",
-      "Kolkata",
-      "Hyderabad",
-      "Noida",
-      "Gurugram",
-      "Jaipur",
-      "Bhopal",
-      "Lucknow",
       "Visakhapatnam",
       "Vadodara",
       "Surat",
@@ -54,18 +33,18 @@ const filterData = [
 
 function Filter() {
   return (
-    <div>
-      <h1>Filter Jobs</h1>
+    <div className="w-full bg-white rounded-md p-4">
+      <h1 className="font-bold text-lg">Filter Jobs</h1>
       <hr className="mt-3" />
       <RadioGroup>
-        {filterData.map((data, index) => (
-          <div>
-            <h2>{data.filterType}</h2>
-            {data.array.map((item, index) => (
-              <RadioGroupItem key={index}>
-                <input type="checkbox" id={index} name={index} value={item} />
-                <label >{item}</label>
-              </RadioGroupItem>
+        {filterData.map((data, filterIndex) => (
+          <div key={filterIndex} className="mt-4">
+            <h2 className="font-bold text-lg">{data.filterType}</h2>
+            {data.array.map((item, itemIndex) => (
+              <div key={itemIndex} className="flex items-center space-x-2 my-2">
+                <RadioGroupItem value={item} id={`${data.filterType}-${item}`} />
+                <label htmlFor={`${data.filterType}-${item}`}>{item}</label>
+              </div>
             ))}
           </div>
         ))}
