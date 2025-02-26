@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./Navbar";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "../ui/badge";
 import AppliedJobs from "./AppliedJobs";
+import EditProfileModel from "./EditProfileModel";
+import { useSelector } from "react-redux";
 
-const skills = ["React", "JavaScript", "HTML", "CSS", "NodeJS", "Mongodb"];
-
+// const skills = ["React", "JavaScript", "HTML", "CSS", "NodeJS", "Mongodb"];
+const isHaveResume = true;
 function Profile() {
-  const isHaveResume = true;
+  const [open, setOpen] = useState(false);
+  const { user } = useSelector((store) => store.auth);
+
   return (
     <div>
       <Navbar />
@@ -18,28 +22,33 @@ function Profile() {
           <div className="flex items-center gap-5">
             <Avatar className="cursor-pointer h-24 w-24">
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <div className="">
-                <h1>Full Name</h1>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing.</p>
-              </div>
             </Avatar>
-          </div>
+  
           <div>
-            <h1 className="font-medium text-xl">Full Name</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            <h1 className="font-medium text-xl">{user?.fullname}</h1>
+            <p>{user?.profile?.bio}</p>
           </div>
-          <Button className="text-right" varient="outline">
+          </div>
+          <Button
+            onClick={() => setOpen(true)}
+            className="text-right"
+            varient="outline"
+          >
             <Pen />
           </Button>
         </div>
         <div className="my-5">
           <div className="flex items-center gap-3 my-2">
             <Mail />
-            <span className="">sahilpattankude@gmail.com</span>
+            <span className="">
+              <a href={`mailto:${user?.email }`} >{user?.email}</a>
+            </span>
           </div>
           <div className="flex items-center gap-3 my-2">
             <Contact />
-            <span>+91 9272164781</span>
+            <span>
+              <a href={`tel:${user?.phoneNumber}`}>{user?.phoneNumber}</a>
+            </span>
           </div>
         </div>
 
@@ -47,8 +56,8 @@ function Profile() {
           <div className="my-5">
             <h1>Skills</h1>
             <div className="flex items-center gap-1">
-              {skills.length !== 0 ? (
-                skills.map((item, index) => <Badge key={index}>{item}</Badge>)
+              {user?.profile?.skills.length !== 0 ? (
+                user?.profile?.skills.map((item, index) => <Badge key={index}>{item}</Badge>)
               ) : (
                 <span>NA</span>
               )}
@@ -66,7 +75,7 @@ function Profile() {
                   href={""}
                   className="text-blue-600 hover:underline cursor-pointer"
                 >
-                  Download
+                 Download
                 </a>
               ) : (
                 <span>No Resume Found</span>
@@ -79,6 +88,8 @@ function Profile() {
         <h1 className="text-lg my-5 font-bold">Applied Jobs</h1>
         <AppliedJobs />
       </div>
+
+      <EditProfileModel open={open} setOpen={setOpen} />
     </div>
   );
 }

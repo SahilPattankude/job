@@ -1,6 +1,9 @@
 import { User } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloud.js";
+
 
 export const register = async (req, res) => {
   try {
@@ -12,6 +15,10 @@ export const register = async (req, res) => {
         success: false,
       });
     }
+
+    const file = req.file;
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     const user = await User.findOne({ email });
     if (user) {
@@ -29,6 +36,9 @@ export const register = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
       role,
+      profile:{
+        profilePhoto: cloudResponse.secure_url,
+      }
     });
 
     await newUser.save();
@@ -136,10 +146,13 @@ export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
     const file = req.file;
-let skillsArray;
-    if(skills){
-      const skillsArray = skills.split(",");
-    }
+
+    //cloudinary upload
+    const fileUri = getDataUri(file);
+    const cloudinaryResponse = await cloudinary.uploader.upload(fileUri.content);
+
+
+
    
     const userId = req.id; // Assuming authentication middleware sets req.id
     let user = await User.findById(userId);
@@ -164,6 +177,12 @@ let skillsArray;
     }
     if(skills) {
       user.profile.skills = skillsArray;
+    }
+
+    //Resume
+    if(cloudinaryResponse){
+      user.profile.resume = cloudinaryResponse.secure_url;
+      user.profile.resumeOriginalname = file.originalname;
     }
     
     user.fullname = user.fullname;
