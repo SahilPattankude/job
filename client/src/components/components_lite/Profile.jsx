@@ -7,32 +7,33 @@ import { Badge } from "../ui/badge";
 import AppliedJobs from "./AppliedJobs";
 import EditProfileModel from "./EditProfileModel";
 import { useSelector } from "react-redux";
+import useGetAppliedJobs from "@/hooks/useGetAllAppliedJobs";
 
-// const skills = ["React", "JavaScript", "HTML", "CSS", "NodeJS", "Mongodb"];
-const isHaveResume = true;
+const isResume = true;
 function Profile() {
+  useGetAppliedJobs();
   const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
 
   return (
     <div>
       <Navbar />
-      <div className="max-w-4xl mx-auto bg-white border-gray-200 rounded-2xl my-5 p-8 shadow shadow-gray-500 hover:shadow-yellow-300">
+
+      <div className="max-w-4xl mx-auto  bg-white border border-gray-200 rounded-2xl my-5 p-8 shadow shadow-gray-400 hover:shadow-yellow-400">
         <div className="flex justify-between">
           <div className="flex items-center gap-5">
             <Avatar className="cursor-pointer h-24 w-24">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+              <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
             </Avatar>
-  
-          <div>
-            <h1 className="font-medium text-xl">{user?.fullname}</h1>
-            <p>{user?.profile?.bio}</p>
-          </div>
+            <div>
+              <h1 className=" font-medium text-xl">{user?.fullname}</h1>
+              <p>{user?.profile?.bio}</p>
+            </div>
           </div>
           <Button
             onClick={() => setOpen(true)}
             className="text-right"
-            varient="outline"
+            variant="outline"
           >
             <Pen />
           </Button>
@@ -41,23 +42,25 @@ function Profile() {
           <div className="flex items-center gap-3 my-2">
             <Mail />
             <span className="">
-              <a href={`mailto:${user?.email }`} >{user?.email}</a>
+              <a href={`mailto:${user?.email}`}>{user?.email}</a>
             </span>
           </div>
           <div className="flex items-center gap-3 my-2">
             <Contact />
-            <span>
+            <span className="">
               <a href={`tel:${user?.phoneNumber}`}>{user?.phoneNumber}</a>
             </span>
           </div>
         </div>
 
-        <div className="">
+        <div>
           <div className="my-5">
             <h1>Skills</h1>
             <div className="flex items-center gap-1">
               {user?.profile?.skills.length !== 0 ? (
-                user?.profile?.skills.map((item, index) => <Badge key={index}>{item}</Badge>)
+                user?.profile?.skills.map((item, index) => (
+                  <Badge key={index}>{item}</Badge>
+                ))
               ) : (
                 <span>NA</span>
               )}
@@ -67,15 +70,18 @@ function Profile() {
 
         <div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
-            <label className="text-md font-bold">Resume</label>
+            <label className="text-md font-bold"> Resume</label>
             <div>
-              {isHaveResume ? (
+              {isResume && user?.profile?.resume  ? (
                 <a
                   target="_blank"
-                  href={""}
+                   rel="noopener noreferrer"
+                  href={user.profile.resume}
+                 
                   className="text-blue-600 hover:underline cursor-pointer"
                 >
-                 Download
+                  Download
+                  {user.profile.resumeOriginalName}
                 </a>
               ) : (
                 <span>No Resume Found</span>
@@ -86,12 +92,14 @@ function Profile() {
       </div>
       <div className="max-w-4xl mx-auto bg-white rounded-2xl">
         <h1 className="text-lg my-5 font-bold">Applied Jobs</h1>
+
+        {/* Add Application Table */}
         <AppliedJobs />
       </div>
 
+      {/* Edit Profile Modal */}
       <EditProfileModel open={open} setOpen={setOpen} />
     </div>
   );
 }
-
 export default Profile;
