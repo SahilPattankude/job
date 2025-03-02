@@ -1,7 +1,7 @@
+import React from "react";
 import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { Button } from "../ui/button";
 import { Popover } from "../ui/popover";
-import React from "react";
 import { Avatar } from "../ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { LogOut, User2 } from "lucide-react";
@@ -13,7 +13,6 @@ import { setUser } from "@/redux/authSlice";
 import { toast } from "sonner";
 
 function Navbar() {
-  
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,18 +37,17 @@ function Navbar() {
     }
   };
 
-
   return (
-    <div className="bg-white">
+    <div className="bg-white font-sans">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
         <div>
-          <h1 className="text-2xl font-bold">
-            <span className="text-[#6B3AC2]"> Job </span>{" "}
-            <span className="text-[#FA4F09]">Portal</span>
+          <h1 className="text-3xl font-extrabold">
+            <span className="text-[#6B3AC2]"> Job </span>
+            <span className="text-[#FA4F09]">Bot</span>
           </h1>
         </div>
         <div className="flex items-center gap-10">
-          <ul className="flex font-medium items-center gap-6">
+          <ul className="flex font-medium items-center gap-6 font-serif">
             {user && user.role === "Recruiter" ? (
               <>
                 <li>
@@ -62,70 +60,54 @@ function Navbar() {
             ) : (
               <>
                 <li>
-                  {" "}
                   <Link to={"/Home"}>Home</Link>
                 </li>
                 <li>
-                  {" "}
-                  <Link to={"/Browse"}>Browse</Link>{" "}
+                  <Link to={"/Browse"}>Browse</Link>
                 </li>
                 <li>
-                  {" "}
                   <Link to={"/Jobs"}>Jobs</Link>
                 </li>
               </>
             )}
           </ul>
           {!user ? (
-            <div className=" flex items-center gap-2">
+            <div className="flex items-center gap-2 font-mono">
               <Link to={"/login"}>
-                {" "}
                 <Button variant="outline">Login</Button>
               </Link>
               <Link to={"/register"}>
-                {" "}
-                <Button className="bg-red-600  hover:bg-red-700">
-                  Register
-                </Button>
+                <Button className="bg-red-600 hover:bg-red-700">Register</Button>
               </Link>
             </div>
           ) : (
             <Popover>
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer">
-                  <AvatarImage
-                    src={user?.profile?.profilePhoto}
-                    alt="@shadcn"
-                  />
+                  <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-80">
                 <div className="flex items-center gap-4 space-y-2">
                   <Avatar className="cursor-pointer">
-                    <AvatarImage
-                      src={user?.profile?.profilePhoto}
-                      alt="@shadcn"
-                    />
+                    <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
                   </Avatar>
                   <div>
-                    <h3 className="font-medium">{user?.fullname}</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <h3 className="font-medium text-lg font-serif">{user?.fullname}</h3>
+                    <p className="text-sm text-muted-foreground font-mono">
                       {user?.profile?.bio}
                     </p>
                   </div>
                 </div>
-
-                <div className="flex flex-col my-2 text-gray-600  ">
+                <div className=" bg-white flex flex-col my-2 text-gray-600 font-sans">
                   {user && user.role === "Student" && (
                     <div className="flex w-fit items-center gap-2 cursor-pointer">
                       <User2></User2>
                       <Button variant="link">
-                        {" "}
-                        <Link to={"/Profile"}> Profile</Link>{" "}
+                        <Link to={"/Profile"}> Profile</Link>
                       </Button>
                     </div>
                   )}
-
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut></LogOut>
                     <Button onClick={logoutHandler} variant="link">
@@ -140,6 +122,6 @@ function Navbar() {
       </div>
     </div>
   );
-};
+}
 
 export default Navbar;

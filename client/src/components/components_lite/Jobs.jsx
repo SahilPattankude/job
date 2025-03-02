@@ -35,7 +35,7 @@ function Jobs() {
   return (
     <div>
       <Navbar />
-      <div className="max-w-7xl mx-auto mt-5">
+      <div className="max-w-7xl mx-auto my-10 mt-5">
         <div className="flex gap-5">
           <div className="w-20%">
             <FilterCard />

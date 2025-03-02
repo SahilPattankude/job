@@ -10,10 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { setLoading } from "@/redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-
+import { motion } from "framer-motion";
 
 function Register() {
- 
   const [input, setInput] = useState({
     fullname: "",
     email: "",
@@ -59,24 +58,26 @@ function Register() {
       }
     } catch (error) {
       console.log(error);
-      const errorMesssage = error.response
+      const errorMessage = error.response
         ? error.response.data.message
-        : "error occured";
-      toast.error(errorMesssage);
-    }finally {
-          dispatch(setLoading(false));
-        }
+        : "Error occurred";
+      toast.error(errorMessage);
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Navbar at the top */}
-      <Navbar />
-
-      {/* Centered Register Form */}
+    <div className="bg-gray-100 min-h-screen font-sans">
+      <Navbar fixed />
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
-        <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
-          <h1 className="text-red-500 font-bold text-2xl mb-5 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md bg-white shadow-lg rounded-lg p-6"
+        >
+          <h1 className="text-red-500 font-bold text-2xl mb-5 text-center font-serif">
             Register Here
           </h1>
 
@@ -125,8 +126,6 @@ function Register() {
                 className="w-full"
               />
             </div>
-
-            {/* Role Selection */}
             <div className="my-4">
               <Label>Role</Label>
               <RadioGroup className="flex gap-4">
@@ -135,7 +134,7 @@ function Register() {
                     type="radio"
                     name="role"
                     value="Student"
-                    checked={input.role == "Student"}
+                    checked={input.role === "Student"}
                     onChange={changeEventHandler}
                     className="cursor-pointer"
                   />
@@ -146,7 +145,7 @@ function Register() {
                     type="radio"
                     name="role"
                     value="Recruiter"
-                    checked={input.role == "Recruiter"}
+                    checked={input.role === "Recruiter"}
                     onChange={changeEventHandler}
                     className="cursor-pointer"
                   />
@@ -154,8 +153,6 @@ function Register() {
                 </div>
               </RadioGroup>
             </div>
-
-            {/* Profile Upload */}
             <div className="my-4">
               <Label>Profile Photo</Label>
               <Input
@@ -173,16 +170,16 @@ function Register() {
               </div>
             ) : (
               <div className="flex justify-center">
-              <button
-                type="submit"
-                className="w-full py-3 bg-black text-white hover:bg-red-400 rounded-md transition"
-              >
-                Register
-              </button>
-            </div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  className="w-full py-3 bg-black text-white hover:bg-red-400 rounded-md transition"
+                >
+                  Register
+                </motion.button>
+              </div>
             )}
-
-           
 
             <p className="text-gray-600 text-center mt-4">
               Already have an account?{" "}
@@ -194,7 +191,7 @@ function Register() {
               </Link>
             </p>
           </form>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

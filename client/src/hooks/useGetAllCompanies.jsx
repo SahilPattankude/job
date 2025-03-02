@@ -1,4 +1,4 @@
-import { setCompanies } from "@/redux/companyslice";
+import { setCompanies } from "@/redux/companySlice";
 import { COMPANY_API_ENDPOINT } from "@/utils/data";
 import axios from "axios";
 import { useEffect, useState } from "react";

@@ -1,25 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
+import { USER_API_ENDPOINT } from "@/utils/data.js";
+import { setLoading, setUser } from "@/redux/authSlice";
 import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import axios from "axios";
-import { toast } from "sonner";
-import { USER_API_ENDPOINT } from "@/utils/data.js";
-import { setLoading, setUser } from "@/redux/authSlice";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
 
 function Login() {
-  const [input, setInput] = useState({
-    email: "",
-    password: "",
-    role: "",
-  });
+  const [input, setInput] = useState({ email: "", password: "", role: "" });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -30,13 +25,10 @@ function Login() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
     try {
       dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       if (res.data.success) {
@@ -46,32 +38,24 @@ function Login() {
       }
     } catch (error) {
       console.log(error);
-      const errorMesssage = error.response
-        ? error.response.data.message
-        : "error occured";
-      toast.error(errorMesssage);
+      const errorMessage = error.response ? error.response.data.message : "An error occurred";
+      toast.error(errorMessage);
     } finally {
       dispatch(setLoading(false));
     }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Navbar Stays at the Top */}
+    <div className="bg-gray-100 min-h-screen flex flex-col">
       <Navbar />
-
-      {/* Centered Form */}
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+      <div className="flex flex-grow items-center justify-center">
         <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
-          <h1 className="text-blue-500 font-bold text-2xl mb-5 text-center">
-            Log In
-          </h1>
-
+          <h1 className="text-blue-500 font-bold text-2xl mb-5 text-center">Log In</h1>
           <form onSubmit={submitHandler}>
             <div className="my-3">
               <Label>Email</Label>
               <Input
-                type="text"
+                type="email"
                 placeholder="Enter your email"
                 className="w-full"
                 value={input.email}
@@ -90,8 +74,6 @@ function Login() {
                 className="w-full"
               />
             </div>
-
-            {/* Role Selection */}
             <div className="my-4">
               <Label>Role</Label>
               <RadioGroup className="flex gap-4">
@@ -100,7 +82,7 @@ function Login() {
                     type="radio"
                     name="role"
                     value="Student"
-                    checked={input.role == "Student"}
+                    checked={input.role === "Student"}
                     onChange={changeEventHandler}
                     className="cursor-pointer"
                   />
@@ -111,7 +93,7 @@ function Login() {
                     type="radio"
                     name="role"
                     value="Recruiter"
-                    checked={input.role == "Recruiter"}
+                    checked={input.role === "Recruiter"}
                     onChange={changeEventHandler}
                     className="cursor-pointer"
                   />
@@ -121,24 +103,18 @@ function Login() {
             </div>
             {loading ? (
               <div className="flex justify-center items-center my-10">
-                <div className="spinner-border text-blue-400 " role="status">
-                  <span className="sr-only">Loading...</span>
-                </div>
+                <Loader2 className="animate-spin text-blue-400" size={24} />
               </div>
             ) : (
               <div className="flex justify-center">
-                <button className="w-full py-3 bg-black text-white hover:bg-blue-400 rounded-md transition">
+                <Button className="w-full py-3 bg-black text-white hover:bg-blue-400 rounded-md transition">
                   Login
-                </button>
+                </Button>
               </div>
             )}
-
             <p className="text-gray-600 text-center mt-4">
               Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="text-blue-500 font-medium hover:underline"
-              >
+              <Link to="/register" className="text-blue-500 font-medium hover:underline">
                 Register
               </Link>
             </p>
