@@ -21,6 +21,7 @@
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "embla-carousel-autoplay": "^8.5.2",
     "embla-carousel-react": "^8.5.2",
     "framer-motion": "^12.4.7",
     "lucide-react": "^0.475.0",
@@ -32,6 +33,7 @@
     "react-router-dom": "^7.2.0",
     "redux-persist": "^6.0.0",
     "redux-toolkit": "^1.1.2",
+    "server": "file:..",
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7"

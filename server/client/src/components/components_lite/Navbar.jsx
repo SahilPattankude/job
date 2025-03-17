@@ -43,7 +43,7 @@ function Navbar() {
         <div>
           <h1 className="text-2xl font-bold">
             <span className="text-[#6B3AC2]"> Job </span>{" "}
-            <span className="text-[#FA4F09]">Portal</span>
+            <span className="text-[#FA4F09]">Hunt</span>
           </h1>
         </div>
         <div className="flex items-center gap-10">

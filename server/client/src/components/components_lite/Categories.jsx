@@ -11,6 +11,7 @@ import { Button } from "../ui/button";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setSearchedQuery } from "@/redux/jobSlice";
+import Autoplay from "embla-carousel-autoplay";
 
 // Job categories
 const Category = [
@@ -52,7 +53,10 @@ function Categories() {
         </p>
       </motion.div>
 
-      <Carousel className="w-full max-w-3xl mx-auto my-10">
+      <Carousel plugins={[
+        Autoplay({delay:1000})
+      ]} 
+      className="w-full max-w-3xl mx-auto my-10">
         <CarouselContent>
           {Category.map((category, index) => (
             <motion.div
