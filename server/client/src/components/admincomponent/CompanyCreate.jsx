@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { COMPANY_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { setSingleCompany } from "@/redux/companyslice";
+import { setSingleCompany } from "@/redux/companySlice";
 import axios from "axios";
 
 function CompanyCreate() {
